@@ -11,7 +11,7 @@ class MemoryMemberRepositoryTest {
 
     MemoryMemberRepository repository = new MemoryMemberRepository();
 
-    // 여러 Test를 실행할 경우 각 메소드의 실행순서에 따라
+    // 여러 Test를 실행할 경우 각 메소드의 실행순서에 따라 
     // repository가 원하는 상태가 아닐 수 있다.
     // 따라서 AfterEach annotation을 붙인 메소드를 만들어 각 메소드 테스트 시마다 실행되도록 해야한다.
     @AfterEach
