@@ -1,13 +1,10 @@
 package hello.hellospring;
 
-import hello.hellospring.repository.JpaMemberRepository;
 import hello.hellospring.repository.MemberRepository;
 import hello.hellospring.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.persistence.EntityManager;
 
 @Configuration
 public class SpringConfig {
@@ -20,11 +17,18 @@ public class SpringConfig {
 //        this.dataSource = dataSource;
 //    }
 
-    private EntityManager em;
+//    private EntityManager em;
+//
+//    @Autowired
+//    public SpringConfig(EntityManager em) {
+//        this.em = em;
+//    }
+
+    private final MemberRepository memberRepository;
 
     @Autowired
-    public SpringConfig(EntityManager em) {
-        this.em = em;
+    public SpringConfig(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
     }
 
     // 이렇게 하면 스프링일 뜰 때 @Configuration을 읽고
@@ -33,12 +37,12 @@ public class SpringConfig {
     // 빈에 등록되어 있는 멤버 리포지토리를 멤버 서비스에 넣어준다.
     @Bean
     public MemberService memberService() {
-        return new MemberService(memberRepository());
+        return new MemberService(memberRepository);
     }
 
-    @Bean
-    public MemberRepository memberRepository() {
-        // 다형성을 이용해 아래 줄만 바꾸면 DB를 바꾸는데도 정상적으로 동작한다.
-        return new JpaMemberRepository(em);
-    }
+//    @Bean
+//    public MemberRepository memberRepository() {
+//        // 다형성을 이용해 아래 줄만 바꾸면 DB를 바꾸는데도 정상적으로 동작한다.
+//        return new JpaMemberRepository(em);
+//    }
 }
