@@ -1,6 +1,6 @@
 package hello.hellospring;
 
-import hello.hellospring.repository.JdbcMemberRepository;
+import hello.hellospring.repository.JdbcTemplateMemberRepository;
 import hello.hellospring.repository.MemberRepository;
 import hello.hellospring.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +32,6 @@ public class SpringConfig {
     @Bean
     public MemberRepository memberRepository() {
         // 다형성을 이용해 아래 줄만 바꾸면 DB를 바꾸는데도 정상적으로 동작한다.
-        return new JdbcMemberRepository(dataSource);
+        return new JdbcTemplateMemberRepository(dataSource);
     }
 }
