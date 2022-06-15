@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-@Service
+//@Service
 public class MemberService {
 
     private final MemberRepository memberRepository;
@@ -16,7 +16,7 @@ public class MemberService {
     // 위의 @Service를 보고 스프링이 서비스네 하고 생성자를 호출하는데
     // @Autowired를 보고 dependency injection이 필요하네라고 하고
     // @Repository를 찾아서 넣어준다.
-    @Autowired
+//    @Autowired
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
