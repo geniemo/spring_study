@@ -1,13 +1,24 @@
 package hello.hellospring;
 
+import hello.hellospring.repository.JdbcMemberRepository;
 import hello.hellospring.repository.MemberRepository;
-import hello.hellospring.repository.MemoryMemberRepository;
 import hello.hellospring.service.MemberService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.sql.DataSource;
+
 @Configuration
 public class SpringConfig {
+
+    // application.properties에 저장해놓은 내용으로 스프링이 알아서 가져와준다
+    private DataSource dataSource;
+
+    @Autowired
+    public SpringConfig(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     // 이렇게 하면 스프링일 뜰 때 @Configuration을 읽고
     // @Bean을 읽어서 멤버 서비스를 스프링 빈에 등록해준다.
@@ -20,6 +31,7 @@ public class SpringConfig {
 
     @Bean
     public MemberRepository memberRepository() {
-        return new MemoryMemberRepository();
+        // 다형성을 이용해 아래 줄만 바꾸면 DB를 바꾸는데도 정상적으로 동작한다.
+        return new JdbcMemberRepository(dataSource);
     }
 }
