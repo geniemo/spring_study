@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class SingletonTest {
-    
+
     @Test
     @DisplayName("스프링 없는 순수한 DI 컨테이너")
     void pureContainer() {
@@ -22,5 +22,19 @@ public class SingletonTest {
         System.out.println("memberService2 = " + memberService2);
 
         Assertions.assertThat(memberService1).isNotSameAs(memberService2);
+    }
+
+    @Test
+    @DisplayName("싱글톤 패턴을 적용한 객체 사용")
+    void singletonServiceTest() {
+//        new SingletonService(); // 오류 난다.
+        SingletonService singletonService1 = SingletonService.getInstance();
+        SingletonService singletonService2 = SingletonService.getInstance();
+
+        System.out.println("singletonService1 = " + singletonService1);
+        System.out.println("singletonService2 = " + singletonService2);
+
+        // 진짜 객체가 똑같은지 확인하는 것이기 때문에 isEqualTo 대신 isSameAs
+        Assertions.assertThat(singletonService1).isSameAs(singletonService2);
     }
 }
