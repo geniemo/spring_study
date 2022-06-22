@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import static org.assertj.core.api.Assertions.*;
+
 public class SingletonTest {
 
     @Test
@@ -23,7 +25,7 @@ public class SingletonTest {
         System.out.println("memberService1 = " + memberService1);
         System.out.println("memberService2 = " + memberService2);
 
-        Assertions.assertThat(memberService1).isNotSameAs(memberService2);
+        assertThat(memberService1).isNotSameAs(memberService2);
     }
 
     @Test
@@ -37,7 +39,7 @@ public class SingletonTest {
         System.out.println("singletonService2 = " + singletonService2);
 
         // 진짜 객체가 똑같은지 확인하는 것이기 때문에 isEqualTo 대신 isSameAs
-        Assertions.assertThat(singletonService1).isSameAs(singletonService2);
+        assertThat(singletonService1).isSameAs(singletonService2);
     }
 
     @Test
@@ -51,6 +53,6 @@ public class SingletonTest {
         System.out.println("memberService1 = " + memberService1);
         System.out.println("memberService2 = " + memberService2);
 
-        Assertions.assertThat(memberService1).isSameAs(memberService2);
+        assertThat(memberService1).isSameAs(memberService2);
     }
 }
