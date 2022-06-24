@@ -1,7 +1,7 @@
 package hello.core.lifecycle;
 
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 public class NetworkClient {
 
@@ -29,6 +29,7 @@ public class NetworkClient {
         System.out.println("close " + url);
     }
 
+    @PostConstruct
     // 의존관계 주입이 끝나면 호출되는 메서드
     public void init() {
         System.out.println("NetworkClient.init");
@@ -36,6 +37,7 @@ public class NetworkClient {
         call("초기화 연결 메시지");
     }
 
+    @PreDestroy
     // 빈이 종료될 때 호출
     public void close() {
         System.out.println("NetworkClient.close");
