@@ -18,7 +18,7 @@ class StatefulServiceTest {
         // 쓰레드 A 사용자가 10000원 주문
         statefulService1.order("userA", 10000);
         // 쓰레드 B 사용자가 20000원 주문
-        statefulService2.order("userB", 10000);
+        statefulService2.order("userB", 20000);
 
         // 쓰레드 A가 주문 금액을 조회
         int price =statefulService1.getPrice();
