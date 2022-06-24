@@ -14,7 +14,7 @@ import org.springframework.context.annotation.FilterType;
 @Configuration
 @ComponentScan(
         // 컴포넌트 스캔 시작 위치를 지정
-        basePackages = "hello.core.member",
+        basePackages = "hello.core",
         // @Configuration도 @Component가 붙어있어서 스캔의 대상이 되는데
         // 여기서는 AppConfig, TestConfig등이 빈에 등록되면 안되기 때문에 제외 설정
         // 보통 설정 정보를 컴포넌트 스캔 대상에서 제외하진 않지만 기존 예제 코드를 최대한 남기고 유지하기 위해 이 방법을 선택
