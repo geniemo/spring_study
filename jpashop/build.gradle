@@ -23,6 +23,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-devtools'
+	// 스프링 2.3.0부터는 javax.validation 임포트해서 사용하려면 별도의 dependency 추가 필요
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	
 	// 쿼리 파라미터 로그 남기기용, 운영 단계 말고 개발 단계 정도에서만 쓰는 걸 권장
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.0'
