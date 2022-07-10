@@ -1,42 +1,37 @@
 package hellojpa;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Date;
 
-@Entity // JPA가 관리
-//@Table(name = "USER") // 이런식으로 실제 어떤 테이블에 매핑할지도 설정 가능
+@Entity
 public class Member {
 
-    // JPA에 PK가 뭔지 알려준다.
     @Id
     private Long id;
-//    @Column(name = "username") // 실제 어떤 컬럼에 매핑할지도 설정 가능
-    private String name;
-    private int age;
 
-    public Member() {
-    }
+    // 객체는 username이라 쓰고싶은데 DB 컬럼 명은 name이라고 쓰고 싶은 경우
+    @Column(name = "name")
+    private String username;
 
-    public Member(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+    private Integer age;
 
-    public Long getId() {
-        return id;
-    }
+    // 객체에서 enum type을 쓰고 싶은데 DB에는 enum 타입이 없다.
+    // 이 경우에 @Enumerated 어노테이션을 사용
+    @Enumerated(EnumType.STRING)
+    private RoleType roleType;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // 날짜 타입을 쓰고싶은 경우 @Temporal을 쓰고
+    // DATE, TIME, TIMESTAMP 중 사용
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdDate;
 
-    public String getName() {
-        return name;
-    }
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastModifiedDate;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    // VARCHAR를 넘어서는 큰 컨텐츠를 넣고 싶다면 @Lob 어노테이션 사용
+    // Lob이라 하고 문자 타입이면 DB 타입은 clob으로 된다.
+    @Lob
+    private String description;
+
+
 }
