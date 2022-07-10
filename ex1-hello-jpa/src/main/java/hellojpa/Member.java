@@ -5,7 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
+@Entity // JPA가 관리
+@Table(name = "MBR")
 //@Table(name = "USER") // 이런식으로 실제 어떤 테이블에 매핑할지도 설정 가능
 public class Member {
 
