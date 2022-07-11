@@ -22,6 +22,27 @@ public class JpaMain {
         // 엔티티 매니저를 꺼낸 후 여기서 실제 코드를 작성
         try {
 
+            Member member = new Member();
+            member.setUsername("member1");
+
+            em.persist(member);
+
+            Team team = new Team();
+            team.setName("teamA");
+            team.getMembers().add(member);
+
+            em.persist(team);
+
+            /*
+            아래와 같은 방식으로 FK 변경
+            update
+                Member
+            set
+                TEAM_ID=?
+            where
+                MEMBER_ID=?
+            */
+
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
