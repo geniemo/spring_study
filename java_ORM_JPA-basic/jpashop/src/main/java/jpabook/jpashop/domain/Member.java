@@ -1,9 +1,8 @@
 package jpabook.jpashop.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Member {
@@ -16,6 +15,11 @@ public class Member {
     private String city;
     private String street;
     private String zipcode;
+
+    // 지금 상황에서 Orders가 필요한 경우는 거의 없지만 예제니까 양방향 설정을 연습한다 하고 한 번 만들어본다.
+    // 실제로는 멤버에 따른 주문 목록이 필요하면 Orders에서 바로 멤버아이디로 조회를 하면 되기 때문에 필요가 없는 작업이다.
+    @OneToMany(mappedBy = "member")
+    private List<Order> orders = new ArrayList<>();
 
     public Long getId() {
         return id;

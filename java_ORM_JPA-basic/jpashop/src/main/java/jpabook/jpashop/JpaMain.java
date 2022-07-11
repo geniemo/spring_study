@@ -2,6 +2,7 @@ package jpabook.jpashop;
 
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.domain.Order;
+import jpabook.jpashop.domain.OrderItem;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -20,12 +21,8 @@ public class JpaMain {
 
         try {
 
-            Order order = em.find(Order.class, 1L);
-            Long memberId = order.getMemberId();
-
-            // order를 가져오고 member를 가져오려면 또 find 해야한다.
-            // Order 클래스에 Member 객체가 멤버로 있는 것이 좀 더 객체지향적이다.
-            Member member = em.find(Member.class, memberId);
+            Order order = new Order();
+            order.addOrderItem(new OrderItem());
 
             tx.commit();
         } catch (Exception e) {
