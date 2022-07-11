@@ -27,15 +27,19 @@ public class JpaMain {
 
             Member member = new Member();
             member.setUsername("member1");
-            // 영속 상태가 되면 무조건 Id는 설정이 되므로 Id값이 설정되었음
-            member.setTeamId(team.getId());
+            member.setTeam(team);
             em.persist(member);
 
-            // 연관관계가 없어서 멤버를 찾고 또 멤버에 있는 teamId를 이용해 또 팀을 찾아야 한다.
             Member findMember = em.find(Member.class, member.getId());
+            Team findTeam = findMember.getTeam();
+            System.out.println("findTeam.getName() = " + findTeam.getName());
 
-            Long findTeamId = findMember.getTeamId();
-            Team findTeam = em.find(Team.class, findTeamId);
+            // 새로운 팀B
+            Team teamB = new Team();
+            teamB.setName("TeamB");
+            em.persist(teamB);
+            // 회원1에 새로운 팀B 설정
+            member.setTeam(teamB);
 
             tx.commit();
         } catch (Exception e) {
