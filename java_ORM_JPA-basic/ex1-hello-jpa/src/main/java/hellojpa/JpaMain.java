@@ -22,25 +22,22 @@ public class JpaMain {
 
         // 엔티티 매니저를 꺼낸 후 여기서 실제 코드를 작성
         try {
-            Team team = new Team();
-            team.setName("teamA");
-            em.persist(team);
+            Child child1 = new Child();
+            Child child2 = new Child();
 
-            Member member1 = new Member();
-            member1.setUsername("member1");
-            member1.setTeam(team);
-            em.persist(member1);
+            Parent parent = new Parent();
+            parent.addChild(child1);
+            parent.addChild(child2);
 
-            em.flush();
-            em.clear();
+            // 원래는 이렇게 해야 했겠지만 코드를 짤 때 parent 위주로 할거야
+            // parent를 persist 하면 child도 같이 persist 되면 좋겠어 -> CASCADE
+//            em.persist(parent);
+//            em.persist(child1);
+//            em.persist(child2);
 
-            Member m = em.find(Member.class, member1.getId());
-            System.out.println("=================");
-            System.out.println("m.getTeam().getClass() = " + m.getTeam().getClass());
-            System.out.println("=================");
-            // 이 때 실제 객체를 가져옴
-            System.out.println("m.getTeam().getName() = " + m.getTeam().getName());
-            
+            // CASCADE를 Parent에 적용한 후에는 parent만 persist 해주면 child 둘 다 persist된다.
+            em.persist(parent);
+
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
