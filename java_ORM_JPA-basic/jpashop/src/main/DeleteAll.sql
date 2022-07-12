@@ -1,0 +1,11 @@
+-- 여러 번 실행하면 다 삭제됨
+drop table if exists CATEGORY_ITEM ;
+drop table if exists CATEGORY ;
+drop table if exists DELIVERY ;
+drop table if exists ITEM ;
+drop table if exists MEMBER ;
+drop table if exists ORDERITEM ;
+drop table if exists ORDERS ;
+drop table if exists ALBUM ;
+drop table if exists BOOK ;
+drop table if exists MOVIE ;
