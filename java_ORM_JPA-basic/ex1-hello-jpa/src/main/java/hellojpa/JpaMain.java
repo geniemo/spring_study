@@ -22,55 +22,25 @@ public class JpaMain {
 
         // 엔티티 매니저를 꺼낸 후 여기서 실제 코드를 작성
         try {
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
             Member member1 = new Member();
             member1.setUsername("member1");
+            member1.setTeam(team);
             em.persist(member1);
-
-            Member member2 = new Member();
-            member2.setUsername("member2");
-            em.persist(member2);
 
             em.flush();
             em.clear();
 
-//            Member findMember = em.find(Member.class, member.getId());
-//            System.out.println("findMember.getId() = " + findMember.getId());
-//            System.out.println("findMember.getUsername() = " + findMember.getUsername());
-
-            // 이 줄은 실행해도 select 쿼리가 나가지 않는다.
-//            Member findMember = em.getReference(Member.class, member1.getId());
-//
-//            // 그런데 또 이를 이용해 값을 실제로 사용하려 하면 쿼리가 나가는 것을 알 수 있다.
-//            System.out.println("findMember.getId() = " + findMember.getId());
-//            System.out.println("before findMember = " + findMember.getClass());
-//            System.out.println("findMember.getUsername() = " + findMember.getUsername());
-//            System.out.println("after findMember = " + findMember.getClass()); // 프록시가 진짜 엔티티로 바뀌지 않았다. 그냥 이 객체를 통해 실제 엔티티에 접근하는 것
-
-            Member m1 = em.find(Member.class, member1.getId());
-            Member m2 = em.getReference(Member.class, member2.getId());
-
-            // false가 나온다. m1은 진짜 객체, m2는 프록시 객체이기 때문
-            System.out.println("(m1.getClass() == m2.getClass()) = " + (m1.getClass() == m2.getClass()));
-            // 둘 다 true가 나온다.
-            System.out.println("(m1 instanceof Member) = " + (m1 instanceof Member));
-            System.out.println("(m2 instanceof Member) = " + (m2 instanceof Member));
-
-            // 이미 영속성 컨텍스트에 member1이 있었기 때문에 getReference를 했음에도 프록시가 아니라 진짜 엔티티 객체가 반환되었다.
-            Member reference = em.getReference(Member.class, member1.getId());
-            System.out.println("reference.getClass() = " + reference.getClass());
-
-            // m2를 준영속 엔티티로 만든다.
-//            em.detach(m2);
-//            em.close(); // 이렇게 해도 마찬가지
-//            em.clear(); // 이렇게 해도 마찬가지
-            // 준영속으로 만든 후 프록시를 초기화하려고 시도 -> org.hibernate.LazyInitializationException: could not initialize proxy
-//            m2.getUsername();
-
-            System.out.println("emf.getPersistenceUnitUtil().isLoaded(reference) = " + emf.getPersistenceUnitUtil().isLoaded(m2));
-//            m2.getUsername(); // 강제 초기화
-            Hibernate.initialize(m2);
-            System.out.println("emf.getPersistenceUnitUtil().isLoaded(reference) = " + emf.getPersistenceUnitUtil().isLoaded(m2));
-
+            Member m = em.find(Member.class, member1.getId());
+            System.out.println("=================");
+            System.out.println("m.getTeam().getClass() = " + m.getTeam().getClass());
+            System.out.println("=================");
+            // 이 때 실제 객체를 가져옴
+            System.out.println("m.getTeam().getName() = " + m.getTeam().getName());
+            
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
