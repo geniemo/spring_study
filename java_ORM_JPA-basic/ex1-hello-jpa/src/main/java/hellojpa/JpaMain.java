@@ -38,6 +38,9 @@ public class JpaMain {
             // CASCADE를 Parent에 적용한 후에는 parent만 persist 해주면 child 둘 다 persist된다.
             em.persist(parent);
 
+            Parent findParent = em.find(Parent.class, parent.getId());
+            findParent.getChildList().remove(0);
+
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
