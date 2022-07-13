@@ -25,23 +25,24 @@ public class Address {
         return city;
     }
 
-    public void setCity(String city) {
-        this.city = city;
-    }
+    // setter를 모두 없애서 불변 타입으로 만든다.
+//    public void setCity(String city) {
+//        this.city = city;
+//    }
 
     public String getStreet() {
         return street;
     }
 
-    public void setStreet(String street) {
-        this.street = street;
-    }
+//    public void setStreet(String street) {
+//        this.street = street;
+//    }
 
     public String getZipcode() {
         return zipcode;
     }
 
-    public void setZipcode(String zipcode) {
-        this.zipcode = zipcode;
-    }
+//    public void setZipcode(String zipcode) {
+//        this.zipcode = zipcode;
+//    }
 }

@@ -22,12 +22,21 @@ public class JpaMain {
 
         // 엔티티 매니저를 꺼낸 후 여기서 실제 코드를 작성
         try {
-            Member member = new Member();
-            member.setUsername("hello");
-            member.setHomeAddress(new Address("city", "street", "zipcode"));
-            member.setWorkPeriod(new Period());
+            Address address = new Address("city", "street", "10000");
 
+            Member member = new Member();
+            member.setUsername("member1");
+            member.setHomeAddress(address);
             em.persist(member);
+
+            Member member2 = new Member();
+            member2.setUsername("member2");
+            member2.setHomeAddress(address);
+            em.persist(member2);
+
+            // 두 엔티티의 도시가 모두 바뀐다. 업데이트 쿼리가 두 개 나감
+            // 이런 걸로 나오는 버그는 찾기도 힘들다.
+//            member.getHomeAddress().setCity("newCity");
 
             tx.commit();
         } catch (Exception e) {
