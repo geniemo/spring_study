@@ -7,3 +7,6 @@ drop table if exists MOVIE ;
 drop table if exists MY_SEQUENCES ;
 drop table if exists PRODUCT ;
 drop table if exists TEAM ;
+drop table if exists CHILD ;
+drop table if exists ITEM ;
+drop table if exists PARENT ;

@@ -22,24 +22,12 @@ public class JpaMain {
 
         // 엔티티 매니저를 꺼낸 후 여기서 실제 코드를 작성
         try {
-            Child child1 = new Child();
-            Child child2 = new Child();
+            Member member = new Member();
+            member.setUsername("hello");
+            member.setHomeAddress(new Address("city", "street", "zipcode"));
+            member.setWorkPeriod(new Period());
 
-            Parent parent = new Parent();
-            parent.addChild(child1);
-            parent.addChild(child2);
-
-            // 원래는 이렇게 해야 했겠지만 코드를 짤 때 parent 위주로 할거야
-            // parent를 persist 하면 child도 같이 persist 되면 좋겠어 -> CASCADE
-//            em.persist(parent);
-//            em.persist(child1);
-//            em.persist(child2);
-
-            // CASCADE를 Parent에 적용한 후에는 parent만 persist 해주면 child 둘 다 persist된다.
-            em.persist(parent);
-
-            Parent findParent = em.find(Parent.class, parent.getId());
-            findParent.getChildList().remove(0);
+            em.persist(member);
 
             tx.commit();
         } catch (Exception e) {
@@ -49,20 +37,5 @@ public class JpaMain {
             em.close();
         }
         emf.close();
-    }
-
-    // 회원 정보만 수정
-    // 이것만 사용할 때는 굳이 팀까지 다 가져올 필요가 없다.
-    private static void printMember(Member member) {
-        System.out.println("member.getUsername() = " + member.getUsername());
-    }
-
-    // 회원과 팀 정보를 함께 출력
-    private static void printMemberAndTeam(Member member) {
-        String username = member.getUsername();
-        System.out.println("username = " + username);
-
-        Team team = member.getTeam();
-        System.out.println("team.getName() = " + team.getName());
     }
 }
