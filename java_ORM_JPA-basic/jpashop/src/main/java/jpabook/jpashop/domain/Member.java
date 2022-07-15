@@ -12,9 +12,8 @@ public class Member extends BaseEntity {
     @Column(name = "MEMBER_ID")
     private Long id;
     private String name;
-    private String city;
-    private String street;
-    private String zipcode;
+    @Embedded
+    private Address address;
 
     // 지금 상황에서 Orders가 필요한 경우는 거의 없지만 예제니까 양방향 설정을 연습한다 하고 한 번 만들어본다.
     // 실제로는 멤버에 따른 주문 목록이 필요하면 Orders에서 바로 멤버아이디로 조회를 하면 되기 때문에 필요가 없는 작업이다.
@@ -37,27 +36,19 @@ public class Member extends BaseEntity {
         this.name = name;
     }
 
-    public String getCity() {
-        return city;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
-    public String getStreet() {
-        return street;
+    public List<Order> getOrders() {
+        return orders;
     }
 
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getZipcode() {
-        return zipcode;
-    }
-
-    public void setZipcode(String zipcode) {
-        this.zipcode = zipcode;
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 }
