@@ -10,3 +10,5 @@ drop table if exists TEAM ;
 drop table if exists CHILD ;
 drop table if exists ITEM ;
 drop table if exists PARENT ;
+drop table if exists FAVORITE_FOOD ;
+drop table if exists ADDRESS ;

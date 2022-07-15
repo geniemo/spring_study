@@ -6,6 +6,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import java.util.List;
+import java.util.Set;
 
 public class JpaMain {
 
@@ -22,21 +24,45 @@ public class JpaMain {
 
         // 엔티티 매니저를 꺼낸 후 여기서 실제 코드를 작성
         try {
-            Address address = new Address("city", "street", "10000");
-
             Member member = new Member();
             member.setUsername("member1");
-            member.setHomeAddress(address);
+            member.setHomeAddress(new Address("homeCity", "street", "10000"));
+
+            member.getFavoriteFoods().add("치킨");
+            member.getFavoriteFoods().add("족발");
+            member.getFavoriteFoods().add("피자");
+
+            member.getAddressHistory().add(new Address("old1", "street", "20000"));
+            member.getAddressHistory().add(new Address("old2", "street", "20000"));
+
             em.persist(member);
 
-            Member member2 = new Member();
-            member2.setUsername("member2");
-            member2.setHomeAddress(address);
-            em.persist(member2);
+            em.flush();
+            em.clear();
 
-            // 두 엔티티의 도시가 모두 바뀐다. 업데이트 쿼리가 두 개 나감
-            // 이런 걸로 나오는 버그는 찾기도 힘들다.
-//            member.getHomeAddress().setCity("newCity");
+            System.out.println("================== START ===================");
+            Member findMember = em.find(Member.class, member.getId());
+
+            List<Address> addressHistory = findMember.getAddressHistory();
+            for (Address address : addressHistory) {
+                System.out.println("address.getCity() = " + address.getCity());
+            }
+
+            Set<String> favoriteFoods = findMember.getFavoriteFoods();
+            for (String favoriteFood : favoriteFoods) {
+                System.out.println("favoriteFood = " + favoriteFood);
+            }
+
+            // 값 타입 수정, homeCity -> newCity
+            findMember.setHomeAddress(new Address("newCity", "street", "30000"));
+
+            // 값 타입 컬렉션 업데이트
+            // 지운 후 새로 add 하는 수 밖에는 없다.
+            findMember.getFavoriteFoods().remove("치킨");
+            findMember.getFavoriteFoods().add("아구찜");
+
+            findMember.getAddressHistory().remove(new Address("old1", "street", "20000"));
+            findMember.getAddressHistory().add(new Address("newCity1", "street", "20000"));
 
             tx.commit();
         } catch (Exception e) {
