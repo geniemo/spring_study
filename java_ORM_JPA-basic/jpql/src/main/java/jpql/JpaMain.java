@@ -21,24 +21,25 @@ public class JpaMain {
 
         // 엔티티 매니저를 꺼낸 후 여기서 실제 코드를 작성
         try {
-            for (int i = 0; i < 100; i++) {
-                Member member = new Member();
-                member.setUsername("member" + i);
-                member.setAge(i);
-                em.persist(member);
-            }
+            Team team = new Team();
+            team.setName("teamA");
+
+            em.persist(team);
+
+            Member member = new Member();
+            member.setUsername("member1");
+            member.setAge(10);
+            member.setTeam(team);
+
+            em.persist(member);
+
 
             em.flush();
             em.clear();
 
-            List<Member> resultList = em.createQuery("select m from Member m order by m.age desc", Member.class)
-                    .setFirstResult(1)
-                    .setMaxResults(10)
-                    .getResultList();
-            System.out.println(resultList.size());
-            for (Member member : resultList) {
-                System.out.println("member = " + member);
-            }
+            // left, right, outer, inner, 세타 조인 다 사용 가능하다.
+            String query = "select m from Member m inner join m.team t";
+            List<Member> resultList = em.createQuery(query, Member.class).getResultList();
 
             tx.commit();
         } catch (Exception e) {
