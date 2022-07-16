@@ -21,25 +21,24 @@ public class JpaMain {
 
         // 엔티티 매니저를 꺼낸 후 여기서 실제 코드를 작성
         try {
-            Member member = new Member();
-            member.setUsername("member1");
-            member.setAge(10);
-            em.persist(member);
+            for (int i = 0; i < 100; i++) {
+                Member member = new Member();
+                member.setUsername("member" + i);
+                member.setAge(i);
+                em.persist(member);
+            }
 
             em.flush();
             em.clear();
 
-            List<Member> result = em.createQuery("select m from Member m", Member.class).getResultList();
-
-            Member findMember = result.get(0);
-            findMember.setAge(20);
-
-            String jpql = "select new jpql.MemberDTO(m.username, m.age) from Member m";
-            List<MemberDTO> resultList = em.createQuery(jpql, MemberDTO.class).getResultList();
-
-            MemberDTO memberDTO = resultList.get(0);
-            System.out.println("memberDTO.getUsername() = " + memberDTO.getUsername());
-            System.out.println("memberDTO.getAge() = " + memberDTO.getAge());
+            List<Member> resultList = em.createQuery("select m from Member m order by m.age desc", Member.class)
+                    .setFirstResult(1)
+                    .setMaxResults(10)
+                    .getResultList();
+            System.out.println(resultList.size());
+            for (Member member : resultList) {
+                System.out.println("member = " + member);
+            }
 
             tx.commit();
         } catch (Exception e) {
