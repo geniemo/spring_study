@@ -12,3 +12,5 @@ drop table if exists ITEM ;
 drop table if exists PARENT ;
 drop table if exists FAVORITE_FOOD ;
 drop table if exists ADDRESS ;
+drop table if exists ORDERS ;
+drop table if exists PRODUCT ;
