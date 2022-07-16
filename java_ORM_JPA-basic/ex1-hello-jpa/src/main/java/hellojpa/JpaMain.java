@@ -35,6 +35,7 @@ public class JpaMain {
                 System.out.println("member = " + member);
             }
 
+            // criteria
             System.out.println("================= criteria =================");
             CriteriaBuilder cb = em.getCriteriaBuilder();
             // 멤버 관련된 쿼리를 할거야
@@ -45,6 +46,10 @@ public class JpaMain {
 
             CriteriaQuery<Member> cq = query.select(m).where(cb.equal(m.get("username"), "kim"));
             List<Member> resultList = em.createQuery(cq).getResultList();
+
+            System.out.println("=================== Native SQL ====================");
+            String sql = "select MEMBER_ID, city, street, zipcode, USERNAME FROM MEMBER";
+            List<Member> resultList2 = em.createNativeQuery(sql, Member.class).getResultList();
 
             tx.commit();
         } catch (Exception e) {
