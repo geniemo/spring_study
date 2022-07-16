@@ -26,20 +26,20 @@ public class JpaMain {
             member.setAge(10);
             em.persist(member);
 
-            TypedQuery<Member> query1 = em.createQuery("select m from Member m", Member.class);
-            TypedQuery<String> query2 = em.createQuery("select m.username from Member m", String.class);
-            // 아래처럼 타입을 특정하여 명기할 수 없을 때는 타입쿼리 말고 그냥 쿼리를 쓴다.
-            Query query3 = em.createQuery("select m.username, m.age from Member m");
+            em.flush();
+            em.clear();
 
-            List<Member> resultList = query1.getResultList();
-            Member singleResult = query1.getSingleResult();
+            List<Member> result = em.createQuery("select m from Member m", Member.class).getResultList();
 
-            // 체이닝 룰 이용해서 써도 된다.
-            String jpql = "select m from Member m where m.username = :username";
-            TypedQuery<Member> query4 = em.createQuery(jpql, Member.class);
-            query4.setParameter("username", "member1");
-            Member singleResult1 = query4.getSingleResult();
-            System.out.println("singleResult1 = " + singleResult1);
+            Member findMember = result.get(0);
+            findMember.setAge(20);
+
+            String jpql = "select new jpql.MemberDTO(m.username, m.age) from Member m";
+            List<MemberDTO> resultList = em.createQuery(jpql, MemberDTO.class).getResultList();
+
+            MemberDTO memberDTO = resultList.get(0);
+            System.out.println("memberDTO.getUsername() = " + memberDTO.getUsername());
+            System.out.println("memberDTO.getAge() = " + memberDTO.getAge());
 
             tx.commit();
         } catch (Exception e) {
