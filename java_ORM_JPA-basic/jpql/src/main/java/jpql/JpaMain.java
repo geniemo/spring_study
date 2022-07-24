@@ -36,27 +36,56 @@ public class JpaMain {
 
             Member member2 = new Member();
             member2.setUsername("teamA");
-            member2.setAge(10);
+            member2.setAge(60);
             member2.setType(MemberType.USER);
             member2.setTeam(team);
 
             em.persist(member2);
 
+            Member member3 = new Member();
+            member3.setUsername(null);
+            member3.setAge(60);
+            member3.setType(MemberType.USER);
+            member3.setTeam(team);
+
+            em.persist(member3);
+            
+            Member member4 = new Member();
+            member4.setUsername("관리자");
+            member4.setAge(60);
+            member4.setType(MemberType.USER);
+            member4.setTeam(team);
+
+            em.persist(member4);
+
             em.flush();
             em.clear();
 
-            String query = "SELECT m.username, 'HELLO', TRUE FROM Member m " +
-                    "WHERE m.type = jpql.MemberType.ADMIN";
-            List<Object[]> result = em.createQuery(query).getResultList();
+            String query =
+                    "SELECT " +
+                        "CASE WHEN m.age <= 10 THEN '학생요금' " +
+                        "     WHEN m.age >= 60 THEN '경로요금' " +
+                        "     ELSE '일반요금' " +
+                        "END " +
+                    "FROM Member m";
+            List<String> result = em.createQuery(query, String.class).getResultList();
 
-            String query2 = "SELECT m.username, 'HELLO', TRUE FROM Member m " +
-                    "WHERE m.type = :userType";
-            List<Object[]> result2 = em.createQuery(query2).setParameter("userType", MemberType.ADMIN).getResultList();
+            for (String s : result) {
+                System.out.println("s = " + s);
+            }
 
-            for (Object[] objects : result) {
-                System.out.println("objects[0] = " + objects[0]);
-                System.out.println("objects[1] = " + objects[1]);
-                System.out.println("objects[2] = " + objects[2]);
+            String query2 = "SELECT COALESCE(m.username, '이름 없는 회원') FROM Member m ";
+            List<String> result2 = em.createQuery(query2, String.class).getResultList();
+
+            for (String s : result2) {
+                System.out.println("s = " + s);
+            }
+
+            String query3 = "SELECT NULLIF(m.username, '관리자') FROM Member m ";
+            List<String> result3 = em.createQuery(query3, String.class).getResultList();
+
+            for (String s : result3) {
+                System.out.println("s = " + s);
             }
 
             tx.commit();
