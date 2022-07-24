@@ -33,13 +33,34 @@ public class JpaMain {
 
             em.persist(member);
 
+            Member member2 = new Member();
+            member2.setUsername("teamA");
+            member2.setAge(10);
+            member2.setTeam(team);
+
+            em.persist(member2);
 
             em.flush();
             em.clear();
 
             // left, right, outer, inner, 세타 조인 다 사용 가능하다.
-            String query = "select m from Member m inner join m.team t";
-            List<Member> resultList = em.createQuery(query, Member.class).getResultList();
+            String query1 = "select m from Member m inner join m.team t";
+            List<Member> resultList1 = em.createQuery(query1, Member.class).getResultList();
+
+//            String query2 = "select m from Member m inner join m.team t where t.name = :teamName";
+//            List<Member> resultList2 = em.createQuery(query2, Member.class).getResultList();
+
+            String query3 = "select m from Member m left outer join m.team t";
+            List<Member> resultList3 = em.createQuery(query3, Member.class).getResultList();
+
+            String query4 = "select m from Member m, Team t where m.username = t.name";
+            List<Member> resultList4 = em.createQuery(query4, Member.class).getResultList();
+
+            String query5 = "select m from Member m left join m.team t on t.name = 'teamA'";
+            List<Member> resultList5 = em.createQuery(query5, Member.class).getResultList();
+
+            String query6 = "select m from Member m left join Team t on m.username = t.name";
+            List<Member> resultList6 = em.createQuery(query6, Member.class).getResultList();
 
             tx.commit();
         } catch (Exception e) {
