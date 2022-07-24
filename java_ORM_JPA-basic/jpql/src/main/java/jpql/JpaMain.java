@@ -49,7 +49,7 @@ public class JpaMain {
             member3.setTeam(team);
 
             em.persist(member3);
-            
+
             Member member4 = new Member();
             member4.setUsername("관리자");
             member4.setAge(60);
@@ -61,31 +61,29 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            String query =
-                    "SELECT " +
-                        "CASE WHEN m.age <= 10 THEN '학생요금' " +
-                        "     WHEN m.age >= 60 THEN '경로요금' " +
-                        "     ELSE '일반요금' " +
-                        "END " +
-                    "FROM Member m";
-            List<String> result = em.createQuery(query, String.class).getResultList();
-
-            for (String s : result) {
+            String query = "SELECT CONCAT('a', 'b') FROM Member m";
+            List<String> resultList = em.createQuery(query, String.class).getResultList();
+            for (String s : resultList) {
                 System.out.println("s = " + s);
             }
 
-            String query2 = "SELECT COALESCE(m.username, '이름 없는 회원') FROM Member m ";
-            List<String> result2 = em.createQuery(query2, String.class).getResultList();
-
-            for (String s : result2) {
+            String query2 = "SELECT SUBSTRING(m.username, 2, 3) FROM Member m";
+            List<String> resultList2 = em.createQuery(query2, String.class).getResultList();
+            for (String s : resultList2) {
                 System.out.println("s = " + s);
             }
 
-            String query3 = "SELECT NULLIF(m.username, '관리자') FROM Member m ";
-            List<String> result3 = em.createQuery(query3, String.class).getResultList();
+            String query3 = "SELECT LOCATE('de', 'abcdefg') FROM Member m";
+            List<Integer> resultList3 = em.createQuery(query3, Integer.class).getResultList();
+            for (Integer integer : resultList3) {
+                System.out.println("integer = " + integer);
+            }
 
-            for (String s : result3) {
-                System.out.println("s = " + s);
+            // 컬렉션의 크기를 알려줌, SIZE()
+            String query4 = "SELECT SIZE(t.members) FROM Team t";
+            List<Integer> resultList4 = em.createQuery(query4, Integer.class).getResultList();
+            for (Integer integer : resultList4) {
+                System.out.println("integer = " + integer);
             }
 
             tx.commit();
