@@ -61,29 +61,10 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            String query = "SELECT CONCAT('a', 'b') FROM Member m";
+            String query = "SELECT FUNCTION('group_concat', m.username) FROM Member m";
             List<String> resultList = em.createQuery(query, String.class).getResultList();
             for (String s : resultList) {
                 System.out.println("s = " + s);
-            }
-
-            String query2 = "SELECT SUBSTRING(m.username, 2, 3) FROM Member m";
-            List<String> resultList2 = em.createQuery(query2, String.class).getResultList();
-            for (String s : resultList2) {
-                System.out.println("s = " + s);
-            }
-
-            String query3 = "SELECT LOCATE('de', 'abcdefg') FROM Member m";
-            List<Integer> resultList3 = em.createQuery(query3, Integer.class).getResultList();
-            for (Integer integer : resultList3) {
-                System.out.println("integer = " + integer);
-            }
-
-            // 컬렉션의 크기를 알려줌, SIZE()
-            String query4 = "SELECT SIZE(t.members) FROM Team t";
-            List<Integer> resultList4 = em.createQuery(query4, Integer.class).getResultList();
-            for (Integer integer : resultList4) {
-                System.out.println("integer = " + integer);
             }
 
             tx.commit();
