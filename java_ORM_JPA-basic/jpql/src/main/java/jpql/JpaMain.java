@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.Collection;
 import java.util.List;
 
 public class JpaMain {
@@ -26,45 +27,49 @@ public class JpaMain {
 
             em.persist(team);
 
-            Member member = new Member();
-            member.setUsername("member1");
-            member.setAge(10);
-            member.setType(MemberType.ADMIN);
-            member.setTeam(team);
+            Member member1 = new Member();
+            member1.setUsername("관리자1");
+            member1.setAge(10);
+            member1.setType(MemberType.ADMIN);
+            member1.setTeam(team);
 
-            em.persist(member);
+            em.persist(member1);
 
             Member member2 = new Member();
-            member2.setUsername("teamA");
+            member2.setUsername("유저1");
             member2.setAge(60);
             member2.setType(MemberType.USER);
             member2.setTeam(team);
 
             em.persist(member2);
 
-            Member member3 = new Member();
-            member3.setUsername(null);
-            member3.setAge(60);
-            member3.setType(MemberType.USER);
-            member3.setTeam(team);
-
-            em.persist(member3);
-
-            Member member4 = new Member();
-            member4.setUsername("관리자");
-            member4.setAge(60);
-            member4.setType(MemberType.USER);
-            member4.setTeam(team);
-
-            em.persist(member4);
-
             em.flush();
             em.clear();
 
-            String query = "SELECT FUNCTION('group_concat', m.username) FROM Member m";
+            String query = "SELECT m.username FROM Member m";
             List<String> resultList = em.createQuery(query, String.class).getResultList();
             for (String s : resultList) {
                 System.out.println("s = " + s);
+            }
+
+            String query2 = "SELECT m.team FROM Member m";
+            List<Team> resultList2 = em.createQuery(query2, Team.class).getResultList();
+
+            // m.team으로 엔티티 가져온 후 추가로 team 내의 name까지 탐색
+            String query3 = "SELECT m.team.name FROM Member m";
+            List<String> resultList3 = em.createQuery(query3, String.class).getResultList();
+            for (String s : resultList3) {
+                System.out.println("s = " + s);
+            }
+
+            String query4 = "SELECT t.members FROM Team t";
+            List<Collection> resultList4 = em.createQuery(query4, Collection.class).getResultList();
+            System.out.println("resultList4 = " + resultList4);
+
+            String query5 = "SELECT t.members.size FROM Team t";
+            List<Integer> resultList5 = em.createQuery(query5, Integer.class).getResultList();
+            for (Integer integer : resultList5) {
+                System.out.println("integer = " + integer);
             }
 
             tx.commit();
