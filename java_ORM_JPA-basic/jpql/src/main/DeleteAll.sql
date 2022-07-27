@@ -1,0 +1,16 @@
+drop table if exists ALBUM ;
+drop table if exists BOOK ;
+drop table if exists LOCKER ;
+drop table if exists MEMBER ;
+drop table if exists MEMBERPRODUCT ;
+drop table if exists MOVIE ;
+drop table if exists MY_SEQUENCES ;
+drop table if exists PRODUCT ;
+drop table if exists TEAM ;
+drop table if exists CHILD ;
+drop table if exists ITEM ;
+drop table if exists PARENT ;
+drop table if exists FAVORITE_FOOD ;
+drop table if exists ADDRESS ;
+drop table if exists ORDERS ;
+drop table if exists PRODUCT ;
