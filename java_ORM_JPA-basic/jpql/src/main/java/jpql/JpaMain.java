@@ -57,41 +57,26 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            String query1 = "SELECT m FROM Member m";
-            List<Member> result1 = em.createQuery(query1, Member.class).getResultList();
-            // 지연로딩이므로 teamA와 teamB가 영속성 컨텍스트에 없다.
-            // 따라서 회원1에서 팀을 가져올 때는 쿼리를 날려서 가져오고, 팀A
-            // 회원 2에서 가져올 때는 1차캐시에서 가져오고, 팀A
-            // 회원 3에서 가져올 때 팀 B는 영속성 컨텍스트에 없으므로 쿼리를 날려서 가져온다. 팀B
-            for (Member member : result1) {
-                System.out.println("member = " + member.getUsername() + ", " + member.getTeam().getName());
+            // 아래 두 쿼리는 같은 SQL문을 내보낸다.
+            String query1 = "SELECT m FROM Member m WHERE m = :member";
+            Member findMember1 = em.createQuery(query1, Member.class).setParameter("member", member1).getSingleResult();
+            System.out.println("findMember1 = " + findMember1);
+
+            String query2 = "SELECT m FROM Member m WHERE m.id = :memberId";
+            Member findMember2 = em.createQuery(query2, Member.class).setParameter("memberId", member1.getId()).getSingleResult();
+            System.out.println("findMember2 = " + findMember2);
+
+            // 아래 두 쿼리는 같은 SQL문을 내보낸다.
+            String query3 = "SELECT m FROM Member m WHERE m.team = :team";
+            List<Member> findMembers1 = em.createQuery(query3, Member.class).setParameter("team", teamA).getResultList();
+            for (Member member : findMembers1) {
+                System.out.println("member = " + member);
             }
 
-            String query2 = "SELECT m FROM Member m JOIN FETCH m.team";
-            List<Member> result2 = em.createQuery(query2, Member.class).getResultList();
-            // 지연로딩이지만 한 번에 모두 다 가져온다.
-            for (Member member : result2) {
-                System.out.println("member = " + member.getUsername() + ", " + member.getTeam().getName());
-            }
-
-            String query3 = "SELECT t FROM Team t JOIN FETCH t.members";
-            List<Team> result3 = em.createQuery(query3, Team.class).getResultList();
-            for (Team team : result3) {
-                System.out.println("team = " + team.getName() + " | " + team.getMembers().size());
-                for (Member member : team.getMembers()) {
-                    System.out.println("-> member = " + member);
-                }
-            }
-
-            // 쿼리만 생각하면 조인 결과에서 멤버 정보가 달라서 결과가 그대로인 게 맞는데
-            // 같은 식별자를 가진 팀 엔티티를 알아서 제거해준다.
-            String query4 = "SELECT DISTINCT t FROM Team t JOIN FETCH t.members";
-            List<Team> result4 = em.createQuery(query4, Team.class).getResultList();
-            for (Team team : result4) {
-                System.out.println("team = " + team.getName() + " | " + team.getMembers().size());
-                for (Member member : team.getMembers()) {
-                    System.out.println("-> member = " + member);
-                }
+            String query4 = "SELECT m FROM Member m WHERE m.team.id = :teamId";
+            List<Member> findMembers2 = em.createQuery(query4, Member.class).setParameter("teamId", teamA.getId()).getResultList();
+            for (Member member : findMembers2) {
+                System.out.println("member = " + member);
             }
 
             tx.commit();
