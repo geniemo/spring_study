@@ -54,16 +54,18 @@ public class JpaMain {
 
             em.persist(member3);
 
-            em.flush();
+            // FLUSH가 되긴 함
+            int resultCount = em.createQuery("UPDATE Member m SET m.age = 20").executeUpdate();
+            System.out.println("resultCount = " + resultCount);
+
+            System.out.println("======= CLEAR 전 =======");
+            Member findMember1 = em.find(Member.class, member1.getId());
+            System.out.println("findMember1 = " + findMember1);
+
             em.clear();
-
-            List<Member> resultList = em.createNamedQuery("Member.findByUsername", Member.class)
-                    .setParameter("username", "회원1")
-                    .getResultList();
-
-            for (Member member : resultList) {
-                System.out.println("member = " + member);
-            }
+            System.out.println("======= CLEAR 후 =======");
+            Member findMember2 = em.find(Member.class, member1.getId());
+            System.out.println("findMember2 = " + findMember2);
 
             tx.commit();
         } catch (Exception e) {
