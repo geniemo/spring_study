@@ -57,25 +57,11 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            // 아래 두 쿼리는 같은 SQL문을 내보낸다.
-            String query1 = "SELECT m FROM Member m WHERE m = :member";
-            Member findMember1 = em.createQuery(query1, Member.class).setParameter("member", member1).getSingleResult();
-            System.out.println("findMember1 = " + findMember1);
+            List<Member> resultList = em.createNamedQuery("Member.findByUsername", Member.class)
+                    .setParameter("username", "회원1")
+                    .getResultList();
 
-            String query2 = "SELECT m FROM Member m WHERE m.id = :memberId";
-            Member findMember2 = em.createQuery(query2, Member.class).setParameter("memberId", member1.getId()).getSingleResult();
-            System.out.println("findMember2 = " + findMember2);
-
-            // 아래 두 쿼리는 같은 SQL문을 내보낸다.
-            String query3 = "SELECT m FROM Member m WHERE m.team = :team";
-            List<Member> findMembers1 = em.createQuery(query3, Member.class).setParameter("team", teamA).getResultList();
-            for (Member member : findMembers1) {
-                System.out.println("member = " + member);
-            }
-
-            String query4 = "SELECT m FROM Member m WHERE m.team.id = :teamId";
-            List<Member> findMembers2 = em.createQuery(query4, Member.class).setParameter("teamId", teamA.getId()).getResultList();
-            for (Member member : findMembers2) {
+            for (Member member : resultList) {
                 System.out.println("member = " + member);
             }
 
