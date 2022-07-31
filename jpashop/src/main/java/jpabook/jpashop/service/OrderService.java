@@ -41,6 +41,8 @@ public class OrderService {
         delivery.setAddress(member.getAddress());
 
         // 주문상품 생성
+        // 원래라면 OrderItem이나 Delivery도 별도의 repository를 이용해 persist를 해준 후 createOrder 시 값을 전달해줘야 하는데
+        // Cascade가 ALL로 설정되어있기 때문에 해주지 않아도 상관없는 것
         OrderItem orderItem = OrderItem.createOrderItem(item, item.getPrice(), count);
 
         // 주문 생성
