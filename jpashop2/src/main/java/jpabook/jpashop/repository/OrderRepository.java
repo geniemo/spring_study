@@ -107,5 +107,13 @@ public class OrderRepository {
         return query.getResultList();
     }
 
+    public List<Order> findAllWithMemberDelivery() {
+        return em.createQuery(
+                "SELECT o FROM Order o" +
+                        " JOIN FETCH o.member m" +
+                        " JOIN FETCH o.delivery d", Order.class
+        ).getResultList();
+    }
+
     // Querydsl로 쓰면 아주 간단해진다. 나중에 바꿔보고 일단은 이걸로 진행해보자.
 }
