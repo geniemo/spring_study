@@ -4,10 +4,10 @@ import jpabook.jpashop.domain.Address;
 import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderItem;
 import jpabook.jpashop.domain.OrderStatus;
-import jpabook.jpashop.repository.order.query.OrderQueryDto;
 import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.repository.OrderSearch;
-import jpabook.jpashop.repository.order.query.OrderQueryRepository;
+import jpabook.jpashop.repository.order.simplequery.OrderSimpleQueryDto;
+import jpabook.jpashop.repository.order.simplequery.OrderSimpleQueryRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,9 +27,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderSimpleApiController {
     private final OrderRepository orderRepository;
-    private final OrderQueryRepository orderQueryRepository;
+    private final OrderSimpleQueryRepository orderQueryRepository;
 
-    @GetMapping("/api/v1/orders")
+    @GetMapping("/api/v1/simple-orders")
     public List<Order> ordersV1() {
         List<Order> all = orderRepository.findAllByString(new OrderSearch());
         // LAZY 강제 초기화
@@ -45,22 +45,22 @@ public class OrderSimpleApiController {
         return all;
     }
 
-    @GetMapping("/api/v2/orders")
-    public List<OrderDto> ordersV2() {
+    @GetMapping("/api/v2/simple-orders")
+    public List<SimpleOrderDto> ordersV2() {
         // ORDER 2개
         // 1 + N 문제 -> 1 + 회원 N + 배송 N -> 1 + 2 + 2번 실행된다.
         List<Order> orders = orderRepository.findAllByString(new OrderSearch());
-        List<OrderDto> result = orders.stream()
-                .map(o -> new OrderDto(o))
+        List<SimpleOrderDto> result = orders.stream()
+                .map(o -> new SimpleOrderDto(o))
                 .collect(Collectors.toList());
         return result;
     }
 
-    @GetMapping("/api/v3/orders")
-    public List<OrderDto> ordersV3() {
+    @GetMapping("/api/v3/simple-orders")
+    public List<SimpleOrderDto> ordersV3() {
         List<Order> orders = orderRepository.findAllWithMemberDelivery();
-        List<OrderDto> result = orders.stream()
-                .map(o -> new OrderDto(o))
+        List<SimpleOrderDto> result = orders.stream()
+                .map(o -> new SimpleOrderDto(o))
                 .collect(Collectors.toList());
         return result;
     }
@@ -69,8 +69,8 @@ public class OrderSimpleApiController {
     // 애플리케이션 네트웤 용량 최적화를 하지만 이 효과는 생각보다 미비하다.
     // 또한 리포지토리 재사용성이 떨어진다.
     // 이러한 트레이드 오프를 생각해서 v3, v4중에 하나를 골라야 한다.
-    @GetMapping("/api/v4/orders")
-    public List<OrderQueryDto> ordersV4() {
+    @GetMapping("/api/v4/simple-orders")
+    public List<OrderSimpleQueryDto> ordersV4() {
         return orderQueryRepository.findOrderDtos();
     }
     
@@ -83,14 +83,14 @@ public class OrderSimpleApiController {
      */
 
     @Data
-    static class OrderDto {
+    static class SimpleOrderDto {
         private Long orderId;
         private String name;
         private LocalDateTime orderDate;
         private OrderStatus orderStatus;
         private Address address;
 
-        public OrderDto(Order order) {
+        public SimpleOrderDto(Order order) {
             orderId = order.getId();
             name = order.getMember().getName();
             orderDate = order.getOrderDate();
