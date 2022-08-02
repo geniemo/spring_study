@@ -1,6 +1,7 @@
 package jpabook.jpashop.repository;
 
 import jpabook.jpashop.domain.Order;
+import jpabook.jpashop.repository.order.query.OrderQueryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -116,4 +117,19 @@ public class OrderRepository {
     }
 
     // Querydsl로 쓰면 아주 간단해진다. 나중에 바꿔보고 일단은 이걸로 진행해보자.
+
+    // 아래 new에서 엔티티를 OrderQueryDto(o)로 넘겨주면 jpa에서는 엔티티 식별자만 넘겨주기 때문에 안에 값을 이용할 수 없다.
+    // 따라서 아래와 같이 값을 꺼내서 넣어주었다.
+    // 그런데 리포지토리는 엔티티를 조회하는 데 쓰는 게 맞다.
+    // v1, v2, v3까지는 그 역할을 제대로 수행한다 하지만 v4는 좀 선을 넘은 감이 있다. 그래서 별도의 리포지토리를 만들어서 쓰면 이런 문제를 해결 가능하다.
+//    public List<OrderQueryDto> findOrderDtos() {
+//        return em.createQuery(
+//                "SELECT new jpabook.jpashop.repository.OrderQueryDto(o.id, m.name, o.orderDate, o.status, d.address)" +
+//                        " FROM Order o" +
+//                        " JOIN o.member m" +
+//                        " JOIN o.delivery d", OrderQueryDto.class)
+//                .getResultList();
+//
+//    }
+
 }

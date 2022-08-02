@@ -4,14 +4,15 @@ import jpabook.jpashop.domain.Address;
 import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderItem;
 import jpabook.jpashop.domain.OrderStatus;
+import jpabook.jpashop.repository.order.query.OrderQueryDto;
 import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.repository.OrderSearch;
+import jpabook.jpashop.repository.order.query.OrderQueryRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderSimpleApiController {
     private final OrderRepository orderRepository;
+    private final OrderQueryRepository orderQueryRepository;
 
     @GetMapping("/api/v1/orders")
     public List<Order> ordersV1() {
@@ -62,6 +64,23 @@ public class OrderSimpleApiController {
                 .collect(Collectors.toList());
         return result;
     }
+
+    // 쿼리문이 필요한 것만 퍼올리도록 개선되었다.
+    // 애플리케이션 네트웤 용량 최적화를 하지만 이 효과는 생각보다 미비하다.
+    // 또한 리포지토리 재사용성이 떨어진다.
+    // 이러한 트레이드 오프를 생각해서 v3, v4중에 하나를 골라야 한다.
+    @GetMapping("/api/v4/orders")
+    public List<OrderQueryDto> ordersV4() {
+        return orderQueryRepository.findOrderDtos();
+    }
+    
+    /*
+    쿼리 방식 선택 권장 순서
+    1. 우선 엔티티를 DTO로 변환
+    2. 필요하면 페치 조인으로 성능 최적화 -> 대부분의 성능 이슈 해결
+    3. 그래도 안되면 DTO로 조회하는 방법 사용
+    4. 최후의 방법은 JPA가 제공하는 네이티브 SQL이나 스프링 JDBC Template을 사용해서 SQL을 직접 사용
+     */
 
     @Data
     static class OrderDto {
