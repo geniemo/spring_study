@@ -27,8 +27,8 @@ public class OrderRepository {
 
     public List<Order> findAll(OrderSearch orderSearch) {
         return em.createQuery("select o from Order o join o.member m" +
-                " where o.status = :status " +
-                " and m.name like :name", Order.class)
+                        " where o.status = :status " +
+                        " and m.name like :name", Order.class)
                 .setParameter("status", orderSearch.getOrderStatus())
                 .setParameter("name", orderSearch.getMemberName())
                 .setMaxResults(1000)
@@ -76,9 +76,9 @@ public class OrderRepository {
 
     /**
      * JPA Criteria
-     *
+     * <p>
      * 동적 코드를 작성할 때 위 방식에 비해 아주 메리트가 있다.
-     *
+     * <p>
      * 얘도 결코 좋은 방법은 아니다. 유지보수성이 0에 가깝다.
      * 코드를 보고서 어떤 쿼리문이 만들어질지 눈에 보이지가 않는다.
      * 표준 스펙에 있지만 실무에서는 잘 쓰지 않는다. 쓰는 사람도 읽는 사람도 멘붕
@@ -90,7 +90,7 @@ public class OrderRepository {
         Join<Object, Object> m = o.join("member", JoinType.INNER);
 
         List<Predicate> criteria = new ArrayList<>();
-        
+
         // 주문 상태 검색
         if (orderSearch.getOrderStatus() != null) {
             Predicate status = cb.equal(o.get("status"), orderSearch.getOrderStatus());
@@ -107,6 +107,8 @@ public class OrderRepository {
         return query.getResultList();
     }
 
+    // Querydsl로 쓰면 아주 간단해진다. 나중에 바꿔보고 일단은 이걸로 진행해보자.
+
     public List<Order> findAllWithMemberDelivery() {
         return em.createQuery(
                 "SELECT o FROM Order o" +
@@ -115,7 +117,21 @@ public class OrderRepository {
         ).getResultList();
     }
 
-    // Querydsl로 쓰면 아주 간단해진다. 나중에 바꿔보고 일단은 이걸로 진행해보자.
+    public List<Order> findAllWithItem() {
+        // 여기서 distinct 는 sql과는 다르게
+        // DB에 distinct 키워드를 날려줄 뿐만 아니라
+        // 엔티티가 중복일 경우 중복을 걸러주는 두 가지 기능이 있다.
+        // 일대다 페치 조인을 할 때는 페이징을 할 수 없다는 단점이 있다.
+        // 컬렉션 페치 조인은 1개만 사용할 수 있다. 컬렉션 둘 이상에 페치 조인을 사용하면 안된다. 데이터가 부정합하게 조회될 수 있다.
+        return em.createQuery(
+                        "SELECT DISTINCT o FROM Order o" +
+                                " JOIN FETCH o.member m" +
+                                " JOIN FETCH o.delivery d" +
+                                " JOIN FETCH o.orderItems oi" +
+                                " JOIN FETCH oi.item i", Order.class)
+                .getResultList();
+
+    }
 
     // 아래 new에서 엔티티를 OrderQueryDto(o)로 넘겨주면 jpa에서는 엔티티 식별자만 넘겨주기 때문에 안에 값을 이용할 수 없다.
     // 따라서 아래와 같이 값을 꺼내서 넣어주었다.
