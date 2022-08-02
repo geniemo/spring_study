@@ -134,6 +134,9 @@ public class OrderRepository {
     }
 
     public List<Order> findAllWithMemberDelivery(int offset, int limit) {
+        // default_batch_fetch_size: 100 를 설정해주면
+        // SELECT o FROM Order o 로만 조회해도 member랑 delivery를 조인할 때 최적화를 해준다.
+        // 그렇지만 ToOne은 그냥 fetch join 하는 게 가장 성능이 잘 나온다.
         return em.createQuery(
                         "SELECT o FROM Order o" +
                                 " JOIN FETCH o.member m" +

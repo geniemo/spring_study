@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -24,6 +25,7 @@ public class Order {
     @JoinColumn(name = "member_id")
     private Member member;
 
+//    @BatchSize(size = 1000) // 컬렉션에 이렇게 배치 사이즈를 글로벌하게 말고 특정해서 지정할 수도 있다.
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
