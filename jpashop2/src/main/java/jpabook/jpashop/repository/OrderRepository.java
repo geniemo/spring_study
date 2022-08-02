@@ -133,6 +133,16 @@ public class OrderRepository {
 
     }
 
+    public List<Order> findAllWithMemberDelivery(int offset, int limit) {
+        return em.createQuery(
+                        "SELECT o FROM Order o" +
+                                " JOIN FETCH o.member m" +
+                                " JOIN FETCH o.delivery d", Order.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+    }
+
     // 아래 new에서 엔티티를 OrderQueryDto(o)로 넘겨주면 jpa에서는 엔티티 식별자만 넘겨주기 때문에 안에 값을 이용할 수 없다.
     // 따라서 아래와 같이 값을 꺼내서 넣어주었다.
     // 그런데 리포지토리는 엔티티를 조회하는 데 쓰는 게 맞다.
