@@ -7,6 +7,7 @@ import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
@@ -28,4 +29,13 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("SELECT m FROM Member m WHERE m.username in :names")
     List<Member> findByNames(@Param("names") List<String> names);
+
+    // 다양한 리턴 타입을 지원한다.
+    // 단건 조회에서는 조회되는 것들이 여러개라면 NonUniqueResultException 이 터지고
+    // 스프링 데이터 jpa 가 spring framework exception 인 IncorrectResultSizeDataAccessException 이 터지게 한다.
+    List<Member> findListByUsername(String username);
+
+    Member findMemberByUsername(String username);
+
+    Optional<Member> findOptionalMemberByUsername(String username);
 }
