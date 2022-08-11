@@ -13,6 +13,8 @@ import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 import study.datajpa.entity.Team;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +30,8 @@ class MemberRepositoryTest {
     MemberRepository memberRepository;
     @Autowired
     TeamRepository teamRepository;
+    @PersistenceContext
+    EntityManager em;
 
     @Test
     public void testMember() throws Exception {
@@ -248,5 +252,33 @@ class MemberRepositoryTest {
         assertThat(page.getTotalPages()).isEqualTo(2); // 페이지 사이즈가 3이니까 전체 페이지 수는 2
         assertThat(page.isFirst()).isTrue(); // 첫 페이지니까 true
         assertThat(page.hasNext()).isTrue(); // 그 다음 페이지가 있으니까 true
+    }
+
+    @Test
+    public void bulkUpdate() throws Exception {
+        // given
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 19));
+        memberRepository.save(new Member("member3", 20));
+        memberRepository.save(new Member("member4", 21));
+        memberRepository.save(new Member("member5", 40));
+
+        // when
+        int resultCount = memberRepository.bulkAgePlus(20);
+
+        em.flush();
+        em.clear();
+
+        List<Member> result = memberRepository.findByUsername("member5");
+        Member member5 = result.get(0);
+        // 벌크 update 연산을 한 이후인데 member5의 나이는 여전히 40으로 남아있다.
+        // 벌크 연산은 db에 바로 적용이 된 것이고 영속성 컨텍스트는 이것이 바뀌었다는 사실조차 모른다.
+        // 따라서 영속성 컨텍스트에는 그대로 40살로 남아있다.
+        // 따라서 위에서처럼 flush, clear 를 해서 영속성 컨텍스트를 날려야 한다.
+        // 하지만 spring data jpa 에서는 Modifying 에 clearAutomatically 를 설정해주면 된다.
+        System.out.println("member5 = " + member5);
+
+        // then
+        assertThat(resultCount).isEqualTo(3);
     }
 }
