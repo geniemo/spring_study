@@ -308,4 +308,33 @@ class MemberRepositoryTest {
 
         // then
     }
+
+    @Test
+    public void queryHint() throws Exception {
+        // given
+        Member member1 = memberRepository.save(new Member("member1", 10));
+        em.flush();
+        em.clear();
+
+        // when
+        Member findMember = memberRepository.findById(member1.getId()).get();
+        findMember.setUsername("member2");
+        em.flush(); // 변경 감지를 해서 업데이트 쿼리를 내보낸다.
+        em.clear();
+
+        findMember = memberRepository.findReadOnlyByUsername("member2");
+        findMember.setUsername("member3");
+
+        em.flush(); // readOnly 를 true 로 설정해놨기 때문에 성능 최적화를 위해 스냅샷을 안만들어둔다. 따라서 더티 체킹을 하지 않는다.
+        // then
+    }
+
+    @Test
+    public void lock() throws Exception {
+        // given
+        List<Member> findMember = memberRepository.findLockByUsername("member1");
+        // when
+
+        // then
+    }
 }
