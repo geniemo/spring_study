@@ -1,12 +1,10 @@
 package study.datajpa.repository;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import study.datajpa.dto.MemberDto;
@@ -345,5 +343,35 @@ class MemberRepositoryTest {
         // when
 
         // then
+    }
+
+    @Test
+    public void queryByExample() {
+        // given
+        Team teamA = new Team("teamA");
+        em.persist(teamA);
+
+        Member m1 = new Member("m1", 0, teamA);
+        Member m2 = new Member("m2", 0, teamA);
+        em.persist(m1);
+        em.persist(m2);
+
+        em.flush();
+        em.clear();
+
+        // when
+        // Probe(필드에 데이터가 있는 실제 도메인 객체) 생성
+        Member member = new Member("m1"); // 엔티티 자체가 검색 조건이 된다.
+
+        // null인 속성들은 무시하지만 java primitive type에는 null이 들어갈 수 없다. 이런 속성들은 무시하겠다고 설정해줘야 한다.
+        // 예시에서는 age라는 속성은 무시한다. 모든 속성을 매칭할 건 아니기 때문에 잘 설정해줘야 한다.
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                .withIgnorePaths("age");
+
+        Example<Member> example = Example.of(member, matcher);
+
+        List<Member> result = memberRepository.findAll(example);
+
+        assertThat(result.get(0).getUsername()).isEqualTo("m1");
     }
 }
