@@ -23,11 +23,14 @@ public class QuerydslBasicTest {
     EntityManager em;
 
     // 그냥 이렇게 필드에 추가해서 쓰는 걸 권장
-    // 동시성 문제에 대해 걱정하지 않아도 된다.
+    // 스프링 프레임워크는 여러 쓰레드에서 동시에 같은 엔티티 매니저에 접근해도
+    // 트랜잭션마다 별도의 영속성 컨텍스트를 제공하므로 동시성 문제에 대해 걱정하지 않아도 된다.
     JPAQueryFactory queryFactory;
 
     @BeforeEach
     public void before() {
+        queryFactory = new JPAQueryFactory(em);
+
         Team teamA = new Team("teamA");
         Team teamB = new Team("teamB");
         em.persist(teamA);
