@@ -71,9 +71,16 @@ compileQuerydsl {
 	options.annotationProcessorPath = configurations.querydsl
 }
 
-compileQuerydsl.doFirst {
-	if(file(querydslDir).exists() )
+compileQuerydsl.doFirst({
+	if(file(querydslDir).exists())
 		delete(file(querydslDir))
-}
+})
+
+// gradlew build 시 compileJava에서 compileQuerydsl을 또 실행한다.
+// 이 때 attempt to recreate... 를 피하기 위해 querydslDir을 삭제하도록 처리
+compileJava.doFirst({
+	if(file(querydslDir).exists())
+		delete(file(querydslDir))
+})
 
 //querydsl 추가 끝

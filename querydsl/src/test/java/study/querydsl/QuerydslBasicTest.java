@@ -109,12 +109,13 @@ public class QuerydslBasicTest {
                 .selectFrom(member)
                 .fetch();
 
-        Member fetchOne = queryFactory
-                .selectFrom(member)
-                .fetchOne();
+        // 아래에서는 결과로 두 개 이상이 조회되므로 에러가 나오므로 주석
+//        Member fetchOne = queryFactory
+//                .selectFrom(member)
+//                .fetchOne();
 
         Member fetchFirst = queryFactory
-                .select(member)
+                .selectFrom(member)
                 .fetchFirst();
 
         QueryResults<Member> results = queryFactory
