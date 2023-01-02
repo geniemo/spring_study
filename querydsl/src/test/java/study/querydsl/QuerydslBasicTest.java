@@ -662,7 +662,6 @@ public class QuerydslBasicTest {
     }
 
     @Test
-    @Commit
     public void bulkUpdate() {
         // 아래와 같이 벌크 연산을 할 수는 있는데
         // 벌크 연산은 영속성 컨텍스트를 무시하고 db에 바로 적용시키기 때문에
