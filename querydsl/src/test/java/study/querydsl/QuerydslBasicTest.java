@@ -4,7 +4,9 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
@@ -619,5 +621,41 @@ public class QuerydslBasicTest {
                 .selectFrom(member)
                 .where(builder) // 위에서 만든 builder를 where에 넣어주면 끝
                 .fetch();
+    }
+
+    @Test
+    public void dynamicQuery_WhereParam() {
+        String usernameParam = "member1";
+        Integer ageParam = null;
+
+        List<Member> result = searchMember2(usernameParam, ageParam);
+        assertThat(result.size()).isEqualTo(1);
+    }
+
+    private List<Member> searchMember2(String usernameCond, Integer ageCond) {
+        return queryFactory
+                .selectFrom(member)
+                // 만들어놓은 메서드에서 각 조건이 null이라면 null을 반환한다.
+                // 그렇다면 where에서 null인 조건들은 무시하므로 동적 쿼리가 풀리는 것.
+//                .where(usernameEq(usernameCond), ageEq(ageCond))
+                .where(allEq(usernameCond, ageCond))
+                .fetch();
+    }
+
+    // 메서드끼리 조립을 해야할 수도 있으므로 Predicate 말고 BooleanExpression으로 해두는 게 좋다.
+    private BooleanExpression usernameEq(String usernameCond) {
+        // 간단할 때는 그냥 이렇게 3항 연산자로
+        return usernameCond != null ? member.username.eq(usernameCond) : null;
+    }
+
+    private BooleanExpression ageEq(Integer ageCond) {
+        return ageCond != null ? member.age.eq(ageCond) : null;
+    }
+
+    // 아래와 같이 조립해서 쓸 수도 있다.
+    // 물론 아래처럼 할 때는 null 처리도 별도로 들어가야 하기 때문에 귀찮을 순 있다.
+    // 하지만 실무에서는 따로 빼놓을 수 있다면 빼놓는 게 장점이 더 많다.
+    private BooleanExpression allEq(String usernameCond, Integer ageCond) {
+        return usernameEq(usernameCond).and(ageEq(ageCond));
     }
 }
